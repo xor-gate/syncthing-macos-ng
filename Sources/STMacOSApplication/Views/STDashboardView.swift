@@ -1,10 +1,12 @@
 import Foundation
 import SwiftUI
 
-struct STDashboardView: View {
-@StateObject private var viewModel = STDashboardViewModel()
+import STSwiftLibrary
 
-    var body: some View {
+public struct STDashboardView: View {
+    @StateObject private var viewModel = STDashboardViewModel()
+
+    public var body: some View {
         NavigationView {
             List {
                 systemStatusSection
@@ -48,7 +50,7 @@ struct STDashboardView: View {
 }
 
 @MainActor
-class STDashboardViewModel: ObservableObject {
+public class STDashboardViewModel: ObservableObject {
     @Published var systemStatus: SystemStatus?
     @Published var folders: [FolderConfiguration] = []
     @Published var folderStatuses: [String: FolderStatus] = [:] // Key: Folder ID

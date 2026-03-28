@@ -1,23 +1,29 @@
 // swift-tools-version: 5.9
-import Foundation
 import PackageDescription
 
 let package = Package(
-    name: "STMacOSApplication",
+    name: "syncthing-macos",
     platforms: [
         .macOS(.v12)
     ],
     products: [
-        .executable(name: "STMacOSApplication", targets: ["STMacOSApplication"])
+        .library(name: "STSwiftLibrary", targets: ["STSwiftLibrary"])
     ],
     dependencies: [
         .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.0"),
     ],
     targets: [
+	.target(
+	    name: "STSwiftLibrary",
+	    dependencies: [
+        	.product(name: "Sparkle", package: "Sparkle")
+	    ],
+            path: "Sources/STSwiftLibrary",
+	),
         .executableTarget(
-            name: "STMacOSApplication",
-            dependencies: ["Sparkle"],
-            path: "Sources",
+            name: "syncthing-macos-exe",
+            dependencies: ["STSwiftLibrary"],
+            path: "Sources/STMacOSApplication",
             //resources: [
             //    .process("Resources")
             //]

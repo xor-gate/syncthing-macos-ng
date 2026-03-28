@@ -124,12 +124,12 @@ struct STOnboardingView: View {
     }
 }
 
-//#Preview {
-//    STOnboardingView()
-//}
-
 struct STOnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         STOnboardingView()
     }
 }
+
+//#Preview {
+//    STOnboardingView()
+//}

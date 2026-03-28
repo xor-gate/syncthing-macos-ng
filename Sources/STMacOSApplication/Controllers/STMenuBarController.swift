@@ -1,6 +1,8 @@
 import AppKit
 import SwiftUI
 
+import STSwiftLibrary
+
 public class STMenuBarController: NSObject, NSWindowDelegate {
     private var statusItem: NSStatusItem!
     private var webWindow: NSWindow?

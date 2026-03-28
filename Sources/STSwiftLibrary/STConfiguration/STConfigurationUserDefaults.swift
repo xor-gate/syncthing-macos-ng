@@ -1,12 +1,12 @@
 import Foundation
 
 @propertyWrapper
-struct STConfigurationUserDefaults<T: Codable> {
+public struct STConfigurationUserDefaults<T: Codable> {
     let key: String
     let defaultValue: T
     var container: UserDefaults = .standard
 
-    var wrappedValue: T {
+    public var wrappedValue: T {
         get {
             // macOS 12: Standard data retrieval
             guard let data = container.data(forKey: key) else {

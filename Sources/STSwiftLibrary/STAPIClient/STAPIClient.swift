@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Core Client
-class STAPIClient {
+public class STAPIClient {
     private let baseURL: URL
     private let apiKey: String
     private let session: URLSession
@@ -34,7 +34,7 @@ class STAPIClient {
         return decoder
     }()
 
-    init(url: String, apiKey: String) {
+    public init(url: String, apiKey: String) {
         self.baseURL = URL(string: url)!
         self.apiKey = apiKey
         self.session = URLSession.shared
@@ -67,22 +67,22 @@ class STAPIClient {
 
     // MARK: - Native Methods
     
-    func getSystemStatus() async throws -> SystemStatus {
+    public func getSystemStatus() async throws -> SystemStatus {
         return try await performRequest(endpoint: "/rest/system/status")
     }
 
     /// Gets the list of all configured folders
-    func getFolders() async throws -> [FolderConfiguration] {
+    public func getFolders() async throws -> [FolderConfiguration] {
         let config: SyncthingFullConfig = try await performRequest(endpoint: "/rest/config")
         return config.folders
     }
 
     /// Gets the runtime status (sync progress, state) for a specific folder
-    func getFolderStatus(id: String) async throws -> FolderStatus {
+    public func getFolderStatus(id: String) async throws -> FolderStatus {
         return try await performRequest(endpoint: "/rest/db/status?folder=\(id)")
     }
     
-    func eventStream(since: Int = 0) -> AsyncThrowingStream<SyncthingEvent, Error> {
+    public func eventStream(since: Int = 0) -> AsyncThrowingStream<SyncthingEvent, Error> {
         return AsyncThrowingStream { continuation in
             let task = Task {
                 var lastID = since
@@ -107,35 +107,35 @@ class STAPIClient {
 
 // MARK: - Models & Enums
 
-enum SyncthingError: Error {
+public enum SyncthingError: Error {
     case invalidURL
     case requestFailed(Int)
 }
 
-struct EmptyResponse: Codable {}
+public struct EmptyResponse: Codable {}
 
-struct SystemStatus: Codable {
-    let myID: String
-    let uptime: Int
-    let cpuPercent: Double
+public struct SystemStatus: Codable {
+    public let myID: String
+    public let uptime: Int
+    public let cpuPercent: Double
 }
 
-struct SyncthingFullConfig: Codable {
-    let folders: [FolderConfiguration]
+public struct SyncthingFullConfig: Codable {
+    public let folders: [FolderConfiguration]
 }
 
-struct SyncthingEvent: Codable, Identifiable {
-    let id: Int
-    let globalID: Int
-    let time: Date
-    let type: EventType
-    let data: [String: AnyCodable]? // Use a Type-Safe wrapper or [String: Any]
+public struct SyncthingEvent: Codable, Identifiable {
+    public let id: Int
+    public let globalID: Int
+    public let time: Date
+    public let type: EventType
+    public let data: [String: AnyCodable]? // Use a Type-Safe wrapper or [String: Any]
     
     enum CodingKeys: String, CodingKey {
         case id, globalID, time, type, data
     }
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
             // Basic fields
@@ -178,7 +178,7 @@ struct SyncthingEvent: Codable, Identifiable {
         }
 }
 
-enum EventType: String, Codable, CaseIterable {
+public enum EventType: String, Codable, CaseIterable {
     // --- System & Config ---
     case starting               = "Starting"
     case startupComplete        = "StartupComplete"
@@ -225,7 +225,7 @@ enum EventType: String, Codable, CaseIterable {
     case unknown = "Unknown"
 
     // Custom initializer to handle unknown strings gracefully
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let rawValue = try container.decode(String.self)
         
@@ -240,37 +240,37 @@ enum EventType: String, Codable, CaseIterable {
 }
 
 /// Data for ItemStarted and ItemFinished events
-struct ItemEventData: Codable {
-    let item: String
-    let folder: String
-    let type: String       // e.g., "file", "dir"
-    let action: String     // e.g., "update", "delete"
-    let error: String?     // Only present in ItemFinished if it failed
+public struct ItemEventData: Codable {
+    public let item: String
+    public let folder: String
+    public let type: String       // e.g., "file", "dir"
+    public let action: String     // e.g., "update", "delete"
+    public let error: String?     // Only present in ItemFinished if it failed
 }
 
 /// Data for FolderSummary events
-struct FolderSummaryData: Codable {
-    let folder: String
-    let summary: SummaryStats
+public struct FolderSummaryData: Codable {
+    public let folder: String
+    public let summary: SummaryStats
     
-    struct SummaryStats: Codable {
-        let globalBytes: Int64
-        let localBytes: Int64
-        let needBytes: Int64
-        let state: FolderState
+    public struct SummaryStats: Codable {
+        public let globalBytes: Int64
+        public let localBytes: Int64
+        public let needBytes: Int64
+        public let state: FolderState
     }
 }
 
 /// Data for DeviceConnected / Disconnected events
-struct DeviceEventData: Codable {
+public struct DeviceEventData: Codable {
     /// The Device ID (mapped from "id")
-    let deviceID: String
+    public let deviceID: String
     
     /// The network address (mapped from "address" or "addr")
-    let address: String?
+    public let address: String?
     
     /// The connection type (e.g., "tcp-client")
-    let type: String?
+    public let type: String?
 
     enum CodingKeys: String, CodingKey {
         case deviceID = "id"
@@ -279,7 +279,7 @@ struct DeviceEventData: Codable {
         case type = "type"
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         // The ID is mandatory
@@ -292,29 +292,29 @@ struct DeviceEventData: Codable {
         self.type = try container.decodeIfPresent(String.self, forKey: .type)
     }
     
-    func encode(to encoder: Encoder) throws { /* Implementation if needed */ }
+    public func encode(to encoder: Encoder) throws { /* Implementation if needed */ }
 }
 
-struct FolderConfiguration: Codable, Identifiable {
-    let id: String
-    let label: String
-    let path: String
-    let type: FolderType
-    let paused: Bool
-    let filesystemType: String
+public struct FolderConfiguration: Codable, Identifiable {
+    public let id: String
+    public let label: String
+    public let path: String
+    public let type: FolderType
+    public let paused: Bool
+    public let filesystemType: String
     
     // Conforming to Identifiable for SwiftUI
-    var identifier: String { id }
+    public var identifier: String { id }
 }
 
-enum FolderType: String, Codable {
+public enum FolderType: String, Codable {
     case sendreceive = "sendreceive"
     case sendonly = "sendonly"
     case receiveonly = "receiveonly"
     case receiveencrypted = "receiveencrypted"
 }
 
-enum FolderState: String, Codable, CaseIterable {
+public enum FolderState: String, Codable, CaseIterable {
     /// Folder is currently being scanned for changes
     case scanning = "scanning"
     
@@ -375,22 +375,22 @@ enum FolderState: String, Codable, CaseIterable {
 }
 
 extension FolderState {
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let rawValue = try container.decode(String.self)
         self = FolderState(rawValue: rawValue) ?? .unknown
     }
 }
 
-struct FolderStatus: Codable {
-    let state: FolderState
-    let errors: Int
-    let globalBytes: Int64
-    let localBytes: Int64
-    let needBytes: Int64
-    let inSyncBytes: Int64
+public struct FolderStatus: Codable {
+    public let state: FolderState
+    public let errors: Int
+    public let globalBytes: Int64
+    public let localBytes: Int64
+    public let needBytes: Int64
+    public let inSyncBytes: Int64
     
-    var progressPercent: Double {
+    public var progressPercent: Double {
         guard globalBytes > 0 else { return 1.0 }
         let progress = Double(inSyncBytes) / Double(globalBytes)
         return progress * 100
@@ -398,12 +398,12 @@ struct FolderStatus: Codable {
 }
 
 // MARK: - Type-Safe Dynamic Data Helper
-struct AnyCodable: Codable {
-    let value: Any
+public struct AnyCodable: Codable {
+    public let value: Any
 
-        init(_ value: Any) { self.value = value }
+        public init(_ value: Any) { self.value = value }
 
-        init(from decoder: Decoder) throws {
+        public init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             
             // 1. Check for Null first
@@ -426,5 +426,5 @@ struct AnyCodable: Codable {
             }
         }
 
-    func encode(to encoder: Encoder) throws { /* Implementation if needed */ }
+    public func encode(to encoder: Encoder) throws { /* Implementation if needed */ }
 }

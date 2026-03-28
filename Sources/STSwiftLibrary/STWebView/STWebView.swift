@@ -1,19 +1,19 @@
 import SwiftUI
 import WebKit
 
-struct STWebViewContainer: NSViewRepresentable {
+public struct STWebViewContainer: NSViewRepresentable {
     let url: URL
     @Binding var isLoading: Bool
 
     // 1. Create the NSView instance
-    func makeNSView(context: Context) -> WKWebView {
+    public func makeNSView(context: Context) -> WKWebView {
         let webView = WKWebView()
         webView.navigationDelegate = context.coordinator
         return webView
     }
 
     // 2. Update the view when state changes
-    func updateNSView(_ nsView: WKWebView, context: Context) {
+    public func updateNSView(_ nsView: WKWebView, context: Context) {
         // Check if we are already showing this URL to prevent redundant reloads
         if nsView.url == nil {
             let request = URLRequest(url: url)
@@ -22,22 +22,22 @@ struct STWebViewContainer: NSViewRepresentable {
     }
 
     // 3. The Coordinator handles WebKit delegates
-    func makeCoordinator() -> Coordinator {
+    public func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
 
-    class Coordinator: NSObject, WKNavigationDelegate {
+    public class Coordinator: NSObject, WKNavigationDelegate {
         var parent: STWebViewContainer
 
-        init(_ parent: STWebViewContainer) {
+        public init(_ parent: STWebViewContainer) {
             self.parent = parent
         }
 
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
+        public func webView(_ webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
             parent.isLoading = true
         }
 
-        func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
+        public func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
             parent.isLoading = false
         }
     }

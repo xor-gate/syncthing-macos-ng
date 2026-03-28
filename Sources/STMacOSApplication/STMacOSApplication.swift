@@ -1,6 +1,8 @@
 import SwiftUI
 import AppKit
 
+import STSwiftLibrary
+
 @main
 struct STMacOSApplication: App {
     @NSApplicationDelegateAdaptor(STMacOSApplicationDelegate.self) var appDelegate
@@ -12,9 +14,10 @@ struct STMacOSApplication: App {
 }
 
 class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    var menuBarController: STMenuBarController?
     var onboardingWindow: NSWindow?
-    var configuration = STConfiguration()
+    var menuBarController: STMenuBarController?
+    var updateController: STUpdateController?
+    //var configuration = STConfigurationStorage()
 
     public override init() {
         super.init()
@@ -22,12 +25,13 @@ class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         menuBarController = STMenuBarController()
+        updateController = STUpdateController()
 
-        if configuration.apiKey.isEmpty {
+        //if configuration.apiKey.isEmpty {
             showOnboardingWindow()
-        } else {
-            menuBarController?.openDashboard()
-        }
+        //} else {
+        //    menuBarController?.openDashboard()
+        //}
     }
     
     func showOnboardingWindow() {
