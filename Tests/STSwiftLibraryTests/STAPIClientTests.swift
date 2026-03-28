@@ -1,14 +1,7 @@
-//
-//  syncthing_macosTests.swift
-//  syncthing-macosTests
-//
-//  Created by Jerry Jacobs on 28/03/2026.
-//
-
 import Testing
-@testable import syncthing_macos
+@testable import STSwiftLibrary
 
-struct syncthing_macosSTAPIClientTests {
+struct STAPIClientTests {
     @Test func getSystemStatus() async throws {
         let client = STAPIClient(url: "http://127.0.0.1:8384", apiKey: "xo9iAMwkdNRGwMrbnzENeCvXjnj6QGjX")
         do {

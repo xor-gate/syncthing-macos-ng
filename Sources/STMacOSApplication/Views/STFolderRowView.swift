@@ -31,3 +31,8 @@ struct STFolderRowView: View {
         }
     }
 }
+
+struct STFolderRowView_Previews: PreviewProvider {
+    static var previews: some View {
+    }
+}

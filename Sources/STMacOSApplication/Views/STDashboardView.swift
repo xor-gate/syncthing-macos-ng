@@ -90,3 +90,9 @@ public class STDashboardViewModel: ObservableObject {
         }
     }
 }
+
+struct STDashboardView_Previews: PreviewProvider {
+    static var previews: some View {
+        STDashboardView()
+    }
+}

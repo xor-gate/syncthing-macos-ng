@@ -10,10 +10,11 @@ public struct STConfigurationStorage
 {
     public static let suiteName = "com.github.syncthing.syncthing-macos"
     public static let shared: Foundation.UserDefaults = {
-        let name = "group.org.syncthing.macos"
-        return Foundation.UserDefaults(suiteName: name) ?? .standard
+        return Foundation.UserDefaults(suiteName: suiteName) ?? .standard
     }()
-    
+
     @STConfigurationUserDefaults(key: "cfg", defaultValue: STConfiguration(), container: shared)
     public static var UserDefaults: STConfiguration
+    
+    public init() {}
 }

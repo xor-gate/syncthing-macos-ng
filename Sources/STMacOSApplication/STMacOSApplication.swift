@@ -3,35 +3,35 @@ import AppKit
 
 import STSwiftLibrary
 
-@main
-struct STMacOSApplication: App {
-    @NSApplicationDelegateAdaptor(STMacOSApplicationDelegate.self) var appDelegate
+public struct STMacOSApplication: App {
+    @NSApplicationDelegateAdaptor(STMacOSApplicationDelegate.self) public var appDelegate
     
-    var body: some Scene {
+    public init() {}
+    
+    public var body: some Scene {
         // Use an empty Settings scene to avoid a default window opening
         Settings { EmptyView() }
     }
 }
 
-class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var onboardingWindow: NSWindow?
     var menuBarController: STMenuBarController?
     var updateController: STUpdateController?
-    //var configuration = STConfigurationStorage()
 
     public override init() {
         super.init()
     }
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
+    public func applicationDidFinishLaunching(_ notification: Notification) {
         menuBarController = STMenuBarController()
         updateController = STUpdateController()
 
-        //if configuration.apiKey.isEmpty {
+        if STConfigurationStorage.UserDefaults.apiKey.isEmpty {
             showOnboardingWindow()
-        //} else {
-        //    menuBarController?.openDashboard()
-        //}
+        } else {
+            menuBarController?.openDashboard()
+        }
     }
     
     func showOnboardingWindow() {
