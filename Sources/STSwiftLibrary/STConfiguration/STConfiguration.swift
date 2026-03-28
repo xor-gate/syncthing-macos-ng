@@ -13,8 +13,12 @@ public struct STConfigurationStorage
         return Foundation.UserDefaults(suiteName: suiteName) ?? .standard
     }()
 
-    @STConfigurationUserDefaults(key: "cfg", defaultValue: STConfiguration(), container: shared)
-    public static var UserDefaults: STConfiguration
+    //@STConfigurationUserDefaults(key: "cfg", defaultValue: STConfiguration(), container: shared)
+    //public var Config: STConfiguration
+    public var XML: STConfigurationXMLReader
     
-    public init() {}
+    public init() {
+        //self.Config = STConfiguration()
+        self.XML = STConfigurationXMLReader()
+    }
 }

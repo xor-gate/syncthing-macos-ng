@@ -34,12 +34,16 @@ public class STAPIClient {
         return decoder
     }()
 
-    public init(url: String, apiKey: String) {
-        self.baseURL = URL(string: url)!
+    public init(url: URL, apiKey: String) {
+        self.baseURL = url
         self.apiKey = apiKey
         self.session = URLSession.shared
     }
 
+    public func getBaseURL() -> URL {
+        return self.baseURL
+    }
+    
     private func performRequest<T: Codable>(endpoint: String, method: String = "GET") async throws -> T {
         guard let url = URL(string: endpoint, relativeTo: baseURL) else {
             throw SyncthingError.invalidURL

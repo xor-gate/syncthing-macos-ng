@@ -18,16 +18,26 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
     var onboardingWindow: NSWindow?
     var menuBarController: STMenuBarController?
     var updateController: STUpdateController?
+    var cfg: STConfigurationStorage?
+    var client: STAPIClient?
 
     public override init() {
         super.init()
     }
 
     public func applicationDidFinishLaunching(_ notification: Notification) {
-        menuBarController = STMenuBarController()
         updateController = STUpdateController()
+        cfg = STConfigurationStorage()
+        cfg?.XML.parse()
 
-        if STConfigurationStorage.UserDefaults.apiKey.isEmpty {
+        let apiURL = cfg?.XML.gui.apiURL
+        let apiKey = cfg?.XML.gui.apiKey
+        
+        client = STAPIClient(url: apiURL!, apiKey: apiKey!)
+        
+        menuBarController = STMenuBarController(client: client!)
+        
+        if cfg?.XML.gui.apiKey.isEmpty != nil {
             showOnboardingWindow()
         } else {
             menuBarController?.openDashboard()

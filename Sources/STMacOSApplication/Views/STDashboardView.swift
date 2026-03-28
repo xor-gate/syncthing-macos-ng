@@ -4,14 +4,19 @@ import SwiftUI
 import STSwiftLibrary
 
 public struct STDashboardView: View {
-    @StateObject private var viewModel = STDashboardViewModel()
+    @StateObject private var viewModel: STDashboardViewModel
 
+    // Manual initializer to bridge the gap
+    public init(client: STAPIClient) {
+        // We use _viewModel to initialize the StateObject wrapper itself
+        self._viewModel = StateObject(wrappedValue: STDashboardViewModel(client: client))
+    }
+    
     public var body: some View {
         NavigationView {
             List {
                 systemStatusSection
                 folderListSection
-                //eventLogSection
             }
             .navigationTitle("Syncthing")
             .onAppear { viewModel.startMonitoring() }
@@ -55,9 +60,12 @@ public class STDashboardViewModel: ObservableObject {
     @Published var folders: [FolderConfiguration] = []
     @Published var folderStatuses: [String: FolderStatus] = [:] // Key: Folder ID
     
-    // TODO
-    private let client = STAPIClient(url: "http://127.0.0.1:8384", apiKey: "xo9iAMwkdNRGwMrbnzENeCvXjnj6QGjX")
+    private var client: STAPIClient
     
+    public init(client: STAPIClient) {
+        self.client = client
+    }
+
     func startMonitoring() {
         Task {
             // 1. Initial Load
@@ -91,8 +99,10 @@ public class STDashboardViewModel: ObservableObject {
     }
 }
 
+#if UNDEF
 struct STDashboardView_Previews: PreviewProvider {
     static var previews: some View {
         STDashboardView()
     }
 }
+#endif

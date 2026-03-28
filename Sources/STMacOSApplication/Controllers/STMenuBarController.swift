@@ -7,8 +7,9 @@ public class STMenuBarController: NSObject, NSWindowDelegate {
     private var statusItem: NSStatusItem!
     private var webWindow: NSWindow?
     private var dashboardWindow: NSWindow?
+    private var client: STAPIClient!
 
-    public override init() {
+    public init(client: STAPIClient) {
         super.init()
 
         // 1. Create the Status Item
@@ -44,6 +45,10 @@ public class STMenuBarController: NSObject, NSWindowDelegate {
         // Set the menu to the status item
         // Note: setting .menu automatically handles the click-to-open behavior
         statusItem.menu = menu
+        
+        //if let delegate = NSApp.delegate as? STMacOSApplicationDelegate {
+        self.client = client
+        //}
     }
 
     @objc func openWebView() {
@@ -68,8 +73,8 @@ public class STMenuBarController: NSObject, NSWindowDelegate {
         
         window.delegate = self
         window.center()
-        window.title = "Syncthing Web UI"
-        window.contentView = NSHostingView(rootView: STWebView())
+        window.title = "Syncthing WebUI"
+        window.contentView = NSHostingView(rootView: STWebView(url: client.getBaseURL()))
 
         self.webWindow = window
         window.makeKeyAndOrderFront(nil)
@@ -110,7 +115,7 @@ public class STMenuBarController: NSObject, NSWindowDelegate {
         window.setFrameAutosaveName("STDashboardWindow")
         window.center()
         window.title = "Syncthing UI"
-        window.contentView = NSHostingView(rootView: STDashboardView())
+        window.contentView = NSHostingView(rootView: STDashboardView(client: client))
 
         self.webWindow = window
         window.makeKeyAndOrderFront(nil)
