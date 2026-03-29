@@ -36,13 +36,14 @@ public class STDaemonProcess: NSObject {
         }
     }
 
-    public func launch() {
+    public func launch() -> Bool{
         if self.path.isEmpty {
-            return
+            return false
         }
         queue.async {
             self.launchSync()
         }
+        return true
     }
 
     public func terminate() {

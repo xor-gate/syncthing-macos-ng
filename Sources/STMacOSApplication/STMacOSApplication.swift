@@ -21,6 +21,7 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
     var cfg: STConfigurationStorage?
     var client: STAPIClient?
     var daemonProcess: STDaemonProcess?
+    var daemonProcessIsRunning: Bool = false
 
     public override init() {
         super.init()
@@ -35,11 +36,16 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
         }
 
         STLoginItem.addAppAsLoginItem()
-        
+
         if let resourcePath = Bundle.main.resourcePath {
             let executable = (resourcePath as NSString).appendingPathComponent("syncthing/syncthing")
+            // TODO arguments
+            // TODO check launch
             daemonProcess = STDaemonProcess(path: executable, arguments: "", delegate: self)
-            daemonProcess?.launch()
+            let result = daemonProcess?.launch()
+            if !result! {
+                NSLog("Syncthing daemon not started")
+            }
         }
         
         let apiURL = cfg?.XML.gui.apiURL
@@ -57,13 +63,27 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
     }
     
     public func applicationWillTerminate(_ notification: Notification) {
-        if daemonProcess != nil {
-            daemonProcess?.terminate()
-        }
+        terminateDaemon()
     }
     
     public func process(_: STDaemonProcess, isRunning: Bool) {
+        daemonProcessIsRunning = isRunning
         NSLog("STDaemonProcess status: \(isRunning)")
+    }
+
+    private func terminateDaemon() {
+        guard let process = daemonProcess, daemonProcessIsRunning else { return }
+        
+        print("Stopping Syncthing daemon...")
+        
+        // 1. Try SIGTERM (Graceful)
+        process.terminate()
+        
+        // 2. Wait a moment for it to exit
+        //process.waitUntilExit()
+        
+        //print("Daemon terminated with status: \(process.terminationStatus)")
+        self.daemonProcess = nil
     }
     
     func showOnboardingWindow() {

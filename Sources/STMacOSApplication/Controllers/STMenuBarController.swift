@@ -31,7 +31,7 @@ public class STMenuBarController: NSObject, NSWindowDelegate {
         openItem.target = self
         menu.addItem(openItem)
     
-        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")
+        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openPreferences), keyEquivalent: ",")
         settingsItem.target = self
         menu.addItem(settingsItem)
         menu.addItem(NSMenuItem.separator())
@@ -81,14 +81,13 @@ public class STMenuBarController: NSObject, NSWindowDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    @objc func openPreferences(_ sender: Any?) {
+        STPreferencesWindowController.shared.show()
+    }
+    
     public func windowWillClose(_ notification: Notification) {
         webWindow = nil // Clean up the reference so we can recreate it next time
         print("Closing....")
-    }
-    
-    @objc func openSettings() {
-        // Logic to show settings
-        print("Settings opened")
     }
     
     @objc func openDashboard() {
