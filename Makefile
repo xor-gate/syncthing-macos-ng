@@ -71,3 +71,5 @@ $(DIST_DIR)/Syncthing.app: $(DIST_DIR)/Syncthing $(DIST_DIR)/STLoginHelper.app
 	cp "$(DIST_DIR)/Syncthing" ".build/dist/Syncthing.app/Contents/MacOS"
 	cp "Sources/STMacOsApplicationMain/Info.plist" ".build/dist/Syncthing.app/Contents"
 	install_name_tool -add_rpath "@executable_path/../Frameworks" ".build/dist/Syncthing.app/Contents/MacOS/Syncthing"
+
+.PHONY: $(DIST_DIR)/Syncthing.app

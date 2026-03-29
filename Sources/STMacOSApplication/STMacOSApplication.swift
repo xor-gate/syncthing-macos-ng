@@ -55,7 +55,13 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
             menuBarController?.openDashboard()
         }
     }
-
+    
+    public func applicationWillTerminate(_ notification: Notification) {
+        if daemonProcess != nil {
+            daemonProcess?.terminate()
+        }
+    }
+    
     public func process(_: STDaemonProcess, isRunning: Bool) {
         NSLog("STDaemonProcess status: \(isRunning)")
     }
