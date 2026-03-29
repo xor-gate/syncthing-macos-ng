@@ -11,7 +11,9 @@ test:
 dist: Syncthing.app
 
 sign:
-	codesign --force --deep --sign - "$(DIST_DIR)/STLoginHelper.app"
+	codesign --force --deep --sign - "$(DIST_DIR)/Syncthing.app/Contents/Frameworks/Sparkle.framework"
+	codesign --force --deep --sign - "$(DIST_DIR)/Syncthing.app/Contents/Library/LoginItems/STLoginHelper.app"
+	codesign --force --deep --sign - "$(DIST_DIR)/Syncthing.app"
 
 clean:
 	swift package clean

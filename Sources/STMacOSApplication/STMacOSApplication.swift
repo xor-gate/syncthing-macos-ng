@@ -28,8 +28,13 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
     public func applicationDidFinishLaunching(_ notification: Notification) {
         updateController = STUpdateController()
         cfg = STConfigurationStorage()
-        cfg?.XML.parse()
+        let result = cfg?.XML.parse()
+        if !result! {
+            NSLog("Error parsing ST config.xml")
+        }
 
+        STLoginItem.addAppAsLoginItem()
+        
         let apiURL = cfg?.XML.gui.apiURL
         let apiKey = cfg?.XML.gui.apiKey
         
