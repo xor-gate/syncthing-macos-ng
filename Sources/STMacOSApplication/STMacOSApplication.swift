@@ -28,24 +28,23 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
     }
 
     public func applicationDidFinishLaunching(_ notification: Notification) {
-        updateController = STUpdateController()
+        //setupSparkle()
+        
         cfg = STConfigurationStorage()
         let result = cfg?.XML.parse()
         if !result! {
             NSLog("Error parsing ST config.xml")
         }
 
-        STLoginItem.addAppAsLoginItem()
-
         if let resourcePath = Bundle.main.resourcePath {
             let executable = (resourcePath as NSString).appendingPathComponent("syncthing/syncthing")
             // TODO arguments
             // TODO check launch
-            daemonProcess = STDaemonProcess(path: executable, arguments: "", delegate: self)
-            let result = daemonProcess?.launch()
-            if !result! {
-                NSLog("Syncthing daemon not started")
-            }
+            //daemonProcess = STDaemonProcess(path: executable, arguments: "", delegate: self)
+            //let result = daemonProcess?.launch()
+            //if !result! {
+            //    NSLog("Syncthing daemon not started")
+            //}
         }
         
         let apiURL = cfg?.XML.gui.apiURL
@@ -55,14 +54,25 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
         
         menuBarController = STMenuBarController(client: client!)
         
-        if cfg?.XML.gui.apiKey.isEmpty != nil {
-            showOnboardingWindow()
-        } else {
-            menuBarController?.openDashboard()
+        //if cfg?.XML.gui.apiKey.isEmpty != nil {
+        //    showOnboardingWindow()
+        //} else {
+        //    menuBarController?.openDashboard()
+        //}
+    }
+    
+    private func setupSparkle() {
+        // 1. Guard against non-bundle environments (Swift PM / Command Line)
+        guard Bundle.main.isAppBundle else {
+            print("Sparkle: Skipping update check (Not running from an .app bundle)")
+            return
         }
+        
+        updateController = STUpdateController()
     }
     
     public func applicationWillTerminate(_ notification: Notification) {
+        print("Stopping Syncthing...")
         terminateDaemon()
     }
     
@@ -114,4 +124,19 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
             // 5. Bring app to front (ensure the window isn't hidden behind Xcode)
             NSApp.activate(ignoringOtherApps: true)
         }
+}
+
+extension Bundle {
+    var isAppBundle: Bool {
+        // Raw binaries usually have a bundlePath ending in /debug or /release
+        // Proper apps end in .app
+        return bundlePath.hasSuffix(".app")
+    }
+
+    var isSigned: Bool {
+        // A simple way to check if the app is signed is to check the
+        // "embedded.provisionprofile" or use a more robust check:
+        // For development, we mainly care if we are in a .app wrapper.
+        return !executablePath!.contains("/.build/")
+    }
 }

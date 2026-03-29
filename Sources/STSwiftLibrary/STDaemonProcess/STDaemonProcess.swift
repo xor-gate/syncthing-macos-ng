@@ -8,7 +8,7 @@
 import Foundation
 
 let RestartInterval = 10.0 // seconds
-let MaxKeepLogLines = 200
+let MaxKeepLogLines = 1024
 
 public protocol STDaemonProcessDelegate: AnyObject {
     func process(_: STDaemonProcess, isRunning: Bool)

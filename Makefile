@@ -8,6 +8,9 @@ run:
 test:
 	swift test
 
+dbg-log:
+	log stream --level debug --process Syncthing
+
 dist: Syncthing.app
 
 sign:
