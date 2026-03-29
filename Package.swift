@@ -8,7 +8,9 @@ let package = Package(
     ],
     products: [
         .library(name: "STSwiftLibrary", targets: ["STSwiftLibrary"]),
-        .library(name: "STMacOSApplication", targets: ["STMacOSApplication"])
+                .executable(
+                    name: "STLoginHelper",
+                    targets: ["STLoginHelper"])
     ],
     dependencies: [
         .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.0"),
@@ -27,13 +29,17 @@ let package = Package(
             path: "Sources/STMacOSApplication",
     ),
         .executableTarget(
-            name: "syncthing-macos-exe",
+            name: "Syncthing",
             dependencies: ["STMacOSApplication"],
             path: "Sources/STMacOSApplicationMain",
             //resources: [
             //    .process("Resources")
             //]
         ),
+                .executableTarget(
+                    name: "STLoginHelper",
+                    dependencies: [],
+                    path: "Sources/STLoginHelperMain"),
     .testTarget(
                 name: "STSwiftLibraryTests",
                 dependencies: ["STSwiftLibrary"], // Link to the library so you can test it
