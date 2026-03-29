@@ -54,11 +54,9 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
         
         menuBarController = STMenuBarController(client: client!)
         
-        //if cfg?.XML.gui.apiKey.isEmpty != nil {
-        //    showOnboardingWindow()
-        //} else {
-        //    menuBarController?.openDashboard()
-        //}
+        if cfg?.XML.gui.apiKey.isEmpty != nil {
+            showOnboardingWindow()
+        }
     }
     
     private func setupSparkle() {
@@ -138,5 +136,9 @@ extension Bundle {
         // "embedded.provisionprofile" or use a more robust check:
         // For development, we mainly care if we are in a .app wrapper.
         return !executablePath!.contains("/.build/")
+    }
+    
+    var releaseVersionNumber: String? {
+        return infoDictionary?["CFBundleShortVersionString"] as? String
     }
 }

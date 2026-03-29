@@ -4,6 +4,8 @@ import STSwiftLibrary
 
 struct STPreferencesView: View {
     @State private var launchAtLogin: Bool = STLoginItem.wasAppAddedAsLoginItem()
+    
+    //let updaterController: STUpdateController
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -18,23 +20,49 @@ struct STPreferencesView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .onChange(of: launchAtLogin) { newValue in
-                if newValue {
-                    STLoginItem.addAppAsLoginItem()
-                } else {
-                    STLoginItem.deleteAppFromLoginItem()
+            .onChange(of: launchAtLogin) { enabled in
+                STLoginItem.setLaunchAtLogin(enabled)
+            }
+
+            Divider()
+
+            // --- Software Updates Section ---
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Software Updates")
+                    .font(.headline)
+                
+                HStack {
+                    Text("Check for updates to ensure you have the latest features and security fixes.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Spacer()
+                    
+                    Button("Check for Updates...") {
+                        // If using Sparkle:
+                        //updaterController.checkForUpdates()
+                        
+                        // If using a custom updater or open-source wrapper:
+                        //print("Checking for updates...")
+                    }
                 }
             }
 
             Divider()
 
+            // --- Footer: Version & Done Button ---
             HStack {
+                Text("Version \(Bundle.main.releaseVersionNumber ?? "1.0.0")")
+                    .font(.footnote)
+                    //.foregroundColor(.tertiaryLabel)
+                
                 Spacer()
+                
                 Button("Done") {
-                    // Close the window
                     NSApp.keyWindow?.close()
                 }
                 .keyboardShortcut(.defaultAction)
+                .controlSize(.large)
             }
         }
         .padding(30)
