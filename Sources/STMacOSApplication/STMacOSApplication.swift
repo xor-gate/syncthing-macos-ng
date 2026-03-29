@@ -28,7 +28,7 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
     }
 
     public func applicationDidFinishLaunching(_ notification: Notification) {
-        //setupSparkle()
+        setupSparkle()
         
         cfg = STConfigurationStorage()
         let result = cfg?.XML.parse()
@@ -40,11 +40,11 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
             let executable = (resourcePath as NSString).appendingPathComponent("syncthing/syncthing")
             // TODO arguments
             // TODO check launch
-            //daemonProcess = STDaemonProcess(path: executable, arguments: "", delegate: self)
-            //let result = daemonProcess?.launch()
-            //if !result! {
-            //    NSLog("Syncthing daemon not started")
-            //}
+            daemonProcess = STDaemonProcess(path: executable, arguments: "", delegate: self)
+            let result = daemonProcess?.launch()
+            if !result! {
+                NSLog("Syncthing daemon not started")
+            }
         }
         
         let apiURL = cfg?.XML.gui.apiURL

@@ -23,5 +23,15 @@
     <true/>
     <key>SUFeedURL</key>
     <string>https://upgrades.syncthing.net/syncthing-macos/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>+v7X9p6L8XWJ3hY1Z0mN5kR4jQ2wS8uV6xT9pL0mN4Y=</string>
+    <key>SUScheduledCheckInterval</key>
+    <integer>86400</integer>
+    <key>SUAutomaticallyUpdate</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
 </dict>
 </plist>
