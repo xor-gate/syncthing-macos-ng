@@ -14,12 +14,13 @@ public struct STMacOSApplication: App {
     }
 }
 
-public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, STDaemonProcessDelegate {
     var onboardingWindow: NSWindow?
     var menuBarController: STMenuBarController?
     var updateController: STUpdateController?
     var cfg: STConfigurationStorage?
     var client: STAPIClient?
+    var daemonProcess: STDaemonProcess?
 
     public override init() {
         super.init()
@@ -35,6 +36,12 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
 
         STLoginItem.addAppAsLoginItem()
         
+        if let resourcePath = Bundle.main.resourcePath {
+            let executable = (resourcePath as NSString).appendingPathComponent("syncthing/syncthing")
+            daemonProcess = STDaemonProcess(path: executable, arguments: "", delegate: self)
+            daemonProcess?.launch()
+        }
+        
         let apiURL = cfg?.XML.gui.apiURL
         let apiKey = cfg?.XML.gui.apiKey
         
@@ -47,6 +54,10 @@ public class STMacOSApplicationDelegate: NSObject, NSApplicationDelegate, NSWind
         } else {
             menuBarController?.openDashboard()
         }
+    }
+
+    public func process(_: STDaemonProcess, isRunning: Bool) {
+        NSLog("STDaemonProcess status: \(isRunning)")
     }
     
     func showOnboardingWindow() {

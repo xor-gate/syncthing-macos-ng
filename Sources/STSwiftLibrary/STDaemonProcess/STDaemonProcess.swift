@@ -10,11 +10,11 @@ import Foundation
 let RestartInterval = 10.0 // seconds
 let MaxKeepLogLines = 200
 
-@objc public protocol STDaemonProcessDelegate: AnyObject {
+public protocol STDaemonProcessDelegate: AnyObject {
     func process(_: STDaemonProcess, isRunning: Bool)
 }
 
-@objc public class STDaemonProcess: NSObject {
+public class STDaemonProcess: NSObject {
     private var path: String
     private var arguments: [String]
     private weak var delegate: STDaemonProcessDelegate?
@@ -23,8 +23,11 @@ let MaxKeepLogLines = 200
     private var queue = DispatchQueue(label: "STDaemonProcess")
     private var shouldTerminate = false
 
-    @objc init(path: String, arguments: String, delegate: STDaemonProcessDelegate) {
-        self.path = path
+    public init(path: String, arguments: String, delegate: STDaemonProcessDelegate) {
+        self.path = ""
+        if FileManager.default.fileExists(atPath: path) {
+            self.path = path
+        }
         self.delegate = delegate
         if !arguments.isEmpty {
             self.arguments = arguments.components(separatedBy: " ")
@@ -33,20 +36,23 @@ let MaxKeepLogLines = 200
         }
     }
 
-    @objc func launch() {
+    public func launch() {
+        if self.path.isEmpty {
+            return
+        }
         queue.async {
             self.launchSync()
         }
     }
 
-    @objc func terminate() {
+    public func terminate() {
         queue.async {
             self.shouldTerminate = true
             self.process?.terminate()
         }
     }
 
-    @objc func restart() {
+    public func restart() {
         queue.async {
             // Syncthing should exit cleanly when sent the interrupt signal. It will then be restarted.
             self.process?.interrupt()

@@ -11,8 +11,8 @@ test:
 dist: Syncthing.app
 
 sign:
-	codesign --force --deep --sign - "$(DIST_DIR)/Syncthing.app/Contents/Frameworks/Sparkle.framework"
-	codesign --force --deep --sign - "$(DIST_DIR)/Syncthing.app/Contents/Library/LoginItems/STLoginHelper.app"
+	codesign --force --sign - "$(DIST_DIR)/Syncthing.app/Contents/Frameworks/Sparkle.framework"
+	codesign --force --sign - "$(DIST_DIR)/Syncthing.app/Contents/Library/LoginItems/STLoginHelper.app"
 	codesign --force --deep --sign - "$(DIST_DIR)/Syncthing.app"
 
 clean:
@@ -67,6 +67,7 @@ $(DIST_DIR)/Syncthing.app: $(DIST_DIR)/Syncthing $(DIST_DIR)/STLoginHelper.app
 	mkdir -p ".build/dist/Syncthing.app/Contents/Library/LoginItems"
 	cp -r "$(DIST_DIR)/STLoginHelper.app" ".build/dist/Syncthing.app/Contents/Library/LoginItems"
 	cp -R ".build/release/Sparkle.framework" ".build/dist/Syncthing.app/Contents/Frameworks"
+	./Scripts/bundle-syncthing-resource.sh
 	cp "$(DIST_DIR)/Syncthing" ".build/dist/Syncthing.app/Contents/MacOS"
 	cp "Sources/STMacOsApplicationMain/Info.plist" ".build/dist/Syncthing.app/Contents"
 	install_name_tool -add_rpath "@executable_path/../Frameworks" ".build/dist/Syncthing.app/Contents/MacOS/Syncthing"

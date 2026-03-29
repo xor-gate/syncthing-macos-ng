@@ -1,0 +1,37 @@
+#!/bin/bash
+set -euo pipefail
+
+# Download and unpack syncthing into ${PRODUCT_NAME}.app/Contents/Resources
+SYNCTHING_VERSION="2.0.14"
+SYNCTHING_DIST_URL="https://github.com/syncthing/syncthing/releases/download"
+SYNCTHING_TARBALL_URL="${SYNCTHING_DIST_URL}/v${SYNCTHING_VERSION}/syncthing-macos-universal-v${SYNCTHING_VERSION}.zip"
+
+CURL_ARGS="--connect-timeout 5 --max-time 10 --retry 5 --retry-delay 3 --retry-max-time 60"
+DL_DIR=".build/dl"
+SYNCTHING_TARBALL="${DL_DIR}/syncthing-${SYNCTHING_VERSION}.zip"
+APP_RESOURCES_DIR=".build/dist/Syncthing.app/Contents/Resources"
+TAR_DIR="${APP_RESOURCES_DIR}/syncthing"
+
+# Download syncthing tarball
+if [ -f "${SYNCTHING_TARBALL}" ]; then
+    echo "-- Syncthing already downloaded"
+    echo "   > ${SYNCTHING_TARBALL}"
+else
+    echo "-- Downloading syncthing"
+    echo "   From > ${SYNCTHING_TARBALL_URL}"
+    echo "     To > ${SYNCTHING_TARBALL}"
+
+    mkdir -p "${DL_DIR}"
+    curl ${CURL_ARGS} -s -L -o ${SYNCTHING_TARBALL} ${SYNCTHING_TARBALL_URL}
+fi
+
+# Unpack to .app Resources folder
+if [ -d "${TAR_DIR}/syncthing" ]; then
+    echo "-- Syncthing already unpacked"
+    echo "   > ${TAR_DIR}"
+else
+    echo "-- Unpacking syncthing"
+    echo "   > ${TAR_DIR}"
+    mkdir -p "${TAR_DIR}"
+    tar -xvf "${SYNCTHING_TARBALL}" -C "${TAR_DIR}" --strip-components=1
+fi
